@@ -70,11 +70,17 @@ public class RobotContainer {
     // Driver: Start = gyro + questnav reset
     primary.start().onTrue(Commands.runOnce(() -> drivetrain.zeroHeading()));
     primary.start().onTrue(Commands.runOnce(() -> questNav.zeroPose()));
+    primary.start().onTrue(Commands.runOnce(() -> {
+      shooter.stopAll();
+      climber.stow();
+      leds.setMode(frc.robot.subsystems.LedSubsystem.LedMode.IDLE);
+    }));
+    
 
     // Driver: X hold = setX (defans lock)
     primary.x().whileTrue(new RunCommand(() -> drivetrain.setX(), drivetrain));
 
-    // Driver: swerve “target / lock” modları (seninki aynen)
+    // Driver: swerve “target / lock” modları
     primary.rightTrigger().whileTrue(
       new RunCommand(
         () -> drivetrain.driveAtTarget(
@@ -112,20 +118,12 @@ public class RobotContainer {
     primary.y().whileTrue(intakeCmd);
     primary.b().whileTrue(reverseCmd);
 
-    // -----------------------------
-    // OPERATOR: Climb (A basılıyken deploy, bırakınca stow)
-    // -----------------------------
+
+    // Climber (A basılıyken deploy, bırakınca stow)
     primary.a().whileTrue(
       new RunCommand(climber::deploy, climber)
         .finallyDo(interrupted -> climber.stow())
     );
-
-    // Opsiyonel: operator.start() ile “her şeyi stop”
-    primary.start().onTrue(Commands.runOnce(() -> {
-      shooter.stopAll();
-      climber.stow();
-      leds.setMode(frc.robot.subsystems.LedSubsystem.LedMode.IDLE);
-    }));
   }
 
   public Command getAutonomousCommand() {
