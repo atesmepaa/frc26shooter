@@ -23,12 +23,12 @@ public class ReverseCommand extends Command {
 
   @Override
   public void execute() {
-    shooter.runIntake(ShooterConstants.kReverseSpeed);
+    shooter.reverseAll(ShooterConstants.kReverseSpeed);
   }
 
   @Override
   public void end(boolean interrupted) {
-    shooter.runIntake(0);
+    shooter.reverseAll(0);
     leds.setMode(LedMode.IDLE);
   }
 
