@@ -65,7 +65,7 @@ public class HoodSubsystem extends SubsystemBase {
     // son clamp: VictorSP -1..+1
     out = MathUtil.clamp(out, -ShooterConstants.kHoodMaxOutput, ShooterConstants.kHoodMaxOutput);
 
-    // soft limit koruması (ek güvenlik)
+    // gote gelmeyek diye
     if (currentDeg >= ShooterConstants.kHoodMaxDeg && out > 0) out = 0;
     if (currentDeg <= ShooterConstants.kHoodMinDeg && out < 0) out = 0;
 
