@@ -15,13 +15,13 @@ public class HoodSubsystem extends SubsystemBase {
   private final VictorSP hoodMotor = new VictorSP(ShooterConstants.kHoodMotorPort);
   private final AnalogInput pot = new AnalogInput(ShooterConstants.kPotentiometerPort);
 
-  // P/I/D saha üstünde tune edilir
+  // P/I/D saha üstünde tune ediliyo
   private final PIDController pid =
       new PIDController(ShooterConstants.kHoodP, ShooterConstants.kHoodI, ShooterConstants.kHoodD);
 
   private final InterpolatingDoubleTreeMap hoodTable = new InterpolatingDoubleTreeMap();
 
-  // en son hedefi sakla (log/debug)
+  // en son hedefi sakla (log/debug yada ne yarramsa)
   private double lastTargetDeg = 0.0;
   private DoubleSupplier distanceSupplier;
 
@@ -34,7 +34,6 @@ public class HoodSubsystem extends SubsystemBase {
 
   }
 
-  /** Pot voltajını gerçek min/max ile dereceye çevir (hassaslık burada başlıyor). */
   public double getAngleDeg() {
     double v = pot.getVoltage();
 
@@ -55,14 +54,10 @@ public class HoodSubsystem extends SubsystemBase {
     lastTargetDeg = targetDeg;
 
     double currentDeg = getAngleDeg();
-
-    // PID output
     double out = pid.calculate(currentDeg, targetDeg);
-
-    // küçük hatada motoru titretmesin diye deadband
     out = MathUtil.applyDeadband(out, ShooterConstants.kHoodOutputDeadband);
 
-    // stiction compensation: hareket etmesi için minimum güç ekle
+    // hareket icin minimum guc
     if (Math.abs(out) > 0) {
       out = Math.copySign(Math.abs(out) + ShooterConstants.kHoodKs, out);
     }

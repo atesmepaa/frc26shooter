@@ -14,12 +14,12 @@ public class ClimberSubsystem extends SubsystemBase {
     climber.set(false); // robot açılışında kapalı
   }
 
-  /** Bara geçirmek için */
+  /** pnömatik açıkken */
   public void deploy() {
     climber.set(true);
   }
 
-  /** Bara geçtikten sonra */
+  /** pnömatiği siktirledikten sonra */
   public void stow() {
     climber.set(false);
   }

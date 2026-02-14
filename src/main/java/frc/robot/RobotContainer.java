@@ -20,6 +20,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShooterCommand;
 
 public class RobotContainer {
@@ -114,7 +115,9 @@ public class RobotContainer {
     );
 
     Command shootCmd = new ShooterCommand(shooter, hood, leds);
+    Command intakeCmd = new IntakeCommand(shooter, leds);
     new Trigger(() -> primary.getRightTriggerAxis() > 0.2).whileTrue(shootCmd);
+    primary.y().whileTrue(intakeCmd);
 
     // -----------------------------
     // OPERATOR: Climb (A basılıyken deploy, bırakınca stow)

@@ -63,13 +63,12 @@ public class ShooterSubsystem extends SubsystemBase {
     flyNeo2.configure(followerCfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     feedNeo.configure(feederCfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    // CIM invert gerekirse constants ile yönet
     feedCim.setInverted(ShooterConstants.kFeederCimInverted);
     transferCim.setInverted(ShooterConstants.kTransferInverted);
     intakeCim.setInverted(ShooterConstants.kIntakeInverted);
   }
 
-  /** Flywheel hedef RPM (RPM varsayıyoruz) */
+  /** flywheel hedef RPM */
   public void runFlywheelRPM(double rpm) {
     rpm = MathUtil.clamp(rpm, 0, ShooterConstants.kMaxFlywheelRPM);
     flyNeo1.getClosedLoopController().setReference(rpm, ControlType.kVelocity);
@@ -91,7 +90,7 @@ public class ShooterSubsystem extends SubsystemBase {
     return currentTargetRpm;
   }
 
-  /** Feeder (NEO + CIM) */
+  /** Feeder */
   public void runFeeder(double speed) {
     speed = MathUtil.clamp(speed, -1, 1);
     feedNeo.set(speed);
