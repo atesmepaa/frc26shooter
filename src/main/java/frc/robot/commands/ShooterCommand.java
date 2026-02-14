@@ -1,7 +1,5 @@
 package frc.robot.commands;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.HoodSubsystem;
@@ -13,22 +11,16 @@ public class ShooterCommand extends Command {
   private final ShooterSubsystem shooter;
   private final HoodSubsystem hood;
   private final LedSubsystem leds;
-  private final DoubleSupplier distanceMeters;
-
-  private double targetRpm = 0;
 
   public ShooterCommand(
       ShooterSubsystem shooter,
       HoodSubsystem hood,
-      LedSubsystem leds,
-      DoubleSupplier distanceMeters) {
+      LedSubsystem leds) {
 
     this.shooter = shooter;
     this.hood = hood;
     this.leds = leds;
-    this.distanceMeters = distanceMeters;
 
-    // HOOD'u REQUIRE ETMİYORUZ -> default aim kesilmez
     addRequirements(shooter, leds);
   }
 
@@ -39,14 +31,7 @@ public class ShooterCommand extends Command {
 
   @Override
   public void execute() {
-    double d = distanceMeters.getAsDouble();
-
-    // Hood hedefini default command zaten güncelliyor.
-    // Burada hood.setAngleBasedOnDistance(d); YOK!
-
-    Double rpm = ShooterConstants.kRpmTable.get(d);
-    targetRpm = (rpm != null) ? rpm : ShooterConstants.kSafeRpm;
-
+    double targetRpm = shooter.getTargetRpm();
     shooter.runFlywheelRPM(targetRpm);
 
     boolean flyReady = shooter.isFlywheelReady(targetRpm);

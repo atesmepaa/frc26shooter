@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
@@ -21,6 +23,7 @@ public class HoodSubsystem extends SubsystemBase {
 
   // en son hedefi sakla (log/debug)
   private double lastTargetDeg = 0.0;
+  private DoubleSupplier distanceSupplier;
 
   public HoodSubsystem() {
     hoodTable.put(1.5, 10.0);
@@ -91,11 +94,22 @@ public class HoodSubsystem extends SubsystemBase {
     return pid.atSetpoint();
   }
 
+  public void setDistanceSupplier(DoubleSupplier distanceSupplier) {
+    this.distanceSupplier = distanceSupplier;
+  }
+
   public double getLastTargetDeg() {
     return lastTargetDeg;
   }
 
   public void stop() {
     hoodMotor.set(0);
+  }
+
+  @Override
+  public void periodic() {
+    if (distanceSupplier != null) {
+      setAngleBasedOnDistance(distanceSupplier.getAsDouble());
+    }
   }
 }

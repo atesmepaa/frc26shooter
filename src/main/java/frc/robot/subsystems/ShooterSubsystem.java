@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -21,6 +23,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private final VictorSP feedCim;
   private final VictorSP transferCim;
   private final VictorSP intakeCim;
+  private DoubleSupplier distanceSupplier;
+  private double currentTargetRpm = ShooterConstants.kSafeRpm;
 
   public ShooterSubsystem() {
     flyNeo1 = new SparkMax(ShooterConstants.kShooterNeo1ID, MotorType.kBrushless);
@@ -79,6 +83,14 @@ public class ShooterSubsystem extends SubsystemBase {
     return Math.abs(getFlywheelRPM() - targetRPM) < ShooterConstants.kFlywheelReadyToleranceRPM;
   }
 
+  public void setDistanceSupplier(DoubleSupplier distanceSupplier) {
+    this.distanceSupplier = distanceSupplier;
+  }
+
+  public double getTargetRpm() {
+    return currentTargetRpm;
+  }
+
   /** Feeder (NEO + CIM) */
   public void runFeeder(double speed) {
     speed = MathUtil.clamp(speed, -1, 1);
@@ -106,5 +118,19 @@ public class ShooterSubsystem extends SubsystemBase {
     feedCim.set(0);
     transferCim.set(0);
     intakeCim.set(0);
+  }
+
+  @Override
+  public void periodic() {
+    if (distanceSupplier == null) {
+      return;
+    }
+
+    double d = MathUtil.clamp(
+        distanceSupplier.getAsDouble(),
+        ShooterConstants.kRpmMinTableM,
+        ShooterConstants.kRpmMaxTableM);
+    Double rpm = ShooterConstants.kRpmTable.get(d);
+    currentTargetRpm = (rpm != null) ? rpm : ShooterConstants.kSafeRpm;
   }
 }

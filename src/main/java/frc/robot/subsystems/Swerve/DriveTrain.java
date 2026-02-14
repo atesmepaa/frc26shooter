@@ -17,6 +17,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -33,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveContants;
 
 public class DriveTrain extends SubsystemBase{
+    private static final Translation2d kShotTarget = new Translation2d(4.625594, 4.034536);
 
     private final Field2d m_field = new Field2d();
     
@@ -300,6 +302,10 @@ public class DriveTrain extends SubsystemBase{
         return poseEstimator.getEstimatedPosition();
     }
 
+    public double getDistanceToShotTargetMeters() {
+        return getPose().getTranslation().getDistance(kShotTarget);
+    }
+
     public void resetOdometry(Pose2d pose) {
         /*
         odometry.resetPosition(getRotation2d(), 
@@ -484,4 +490,3 @@ public class DriveTrain extends SubsystemBase{
         setModuleStates(states);
     }
 }
-

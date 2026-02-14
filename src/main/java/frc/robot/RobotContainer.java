@@ -42,6 +42,10 @@ public class RobotContainer {
   private static final double slowFactor = 1.0; // sende 1, istersen 0.5 yap
 
   public RobotContainer() {
+    var distanceSupplier = (java.util.function.DoubleSupplier) drivetrain::getDistanceToShotTargetMeters;
+    hood.setDistanceSupplier(distanceSupplier);
+    shooter.setDistanceSupplier(distanceSupplier);
+
     configureBindings();
 
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -109,9 +113,7 @@ public class RobotContainer {
       )
     );
 
-    var distSupplier = (java.util.function.DoubleSupplier) () -> 3.0;
-
-    Command shootCmd = new ShooterCommand(shooter, hood, leds, distSupplier);
+    Command shootCmd = new ShooterCommand(shooter, hood, leds);
     new Trigger(() -> primary.getRightTriggerAxis() > 0.2).whileTrue(shootCmd);
 
     // -----------------------------
