@@ -21,6 +21,7 @@ import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.ReverseCommand;
 import frc.robot.commands.ShooterCommand;
 
 public class RobotContainer {
@@ -40,8 +41,6 @@ public class RobotContainer {
   // Xbox
   public static final CommandXboxController primary  = new CommandXboxController(OIConstants.primaryPort);   // driver
 
-  private static final double slowFactor = 1.0; // sende 1, istersen 0.5 yap
-
   public RobotContainer() {
     var distanceSupplier = (java.util.function.DoubleSupplier) drivetrain::getDistanceToShotTargetMeters;
     hood.setDistanceSupplier(distanceSupplier);
@@ -59,14 +58,6 @@ public class RobotContainer {
           double ySpeed = -MathUtil.applyDeadband(primary.getLeftY(),  OIConstants.driveDeadband);
           double xSpeed = -MathUtil.applyDeadband(primary.getLeftX(),  OIConstants.driveDeadband);
           double rot    = -MathUtil.applyDeadband(primary.getRightX(), OIConstants.driveDeadband);
-
-          // B basılıysa slow (şu an slowFactor=1 => etkisiz; 0.4-0.6 yapınca anlamlı)
-          if (primary.b().getAsBoolean()) {
-            ySpeed *= slowFactor;
-            xSpeed *= slowFactor;
-            rot    *= slowFactor;
-          }
-
           drivetrain.drive(ySpeed, xSpeed, rot, true);
         },
         drivetrain
@@ -116,8 +107,10 @@ public class RobotContainer {
 
     Command shootCmd = new ShooterCommand(shooter, hood, leds);
     Command intakeCmd = new IntakeCommand(shooter, leds);
-    new Trigger(() -> primary.getRightTriggerAxis() > 0.2).whileTrue(shootCmd);
+    Command reverseCmd = new ReverseCommand(shooter, leds);
+    new Trigger(() -> primary.getLeftTriggerAxis() > 0.2).whileTrue(shootCmd);
     primary.y().whileTrue(intakeCmd);
+    primary.b().whileTrue(reverseCmd);
 
     // -----------------------------
     // OPERATOR: Climb (A basılıyken deploy, bırakınca stow)

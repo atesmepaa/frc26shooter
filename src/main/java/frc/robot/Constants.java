@@ -134,6 +134,7 @@ public final class Constants {
     public static final double kIntakeShootSpeed = 0.75;
     public static final double kFeederIntakeSpeed = 0.35;
     public static final double kIntakeCollectSpeed = 0.70;
+    public static final double kReverseSpeed = -0.45;
 
     // Distance -> RPM table
     public static final InterpolatingDoubleTreeMap kRpmTable = new InterpolatingDoubleTreeMap();

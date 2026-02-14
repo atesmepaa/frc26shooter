@@ -6,11 +6,11 @@ import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.LedSubsystem.LedMode;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class IntakeCommand extends Command {
+public class ReverseCommand extends Command {
   private final ShooterSubsystem shooter;
   private final LedSubsystem leds;
 
-  public IntakeCommand(ShooterSubsystem shooter, LedSubsystem leds) {
+  public ReverseCommand(ShooterSubsystem shooter, LedSubsystem leds) {
     this.shooter = shooter;
     this.leds = leds;
     addRequirements(shooter, leds);
@@ -23,7 +23,7 @@ public class IntakeCommand extends Command {
 
   @Override
   public void execute() {
-    shooter.runIntake(ShooterConstants.kIntakeCollectSpeed);
+    shooter.runIntake(ShooterConstants.kReverseSpeed);
   }
 
   @Override
