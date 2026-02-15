@@ -44,10 +44,8 @@ public class ShooterCommand extends Command {
 
     if (canFire) {
       shooter.runFeeder(ShooterConstants.kFeederShootSpeed);
-      shooter.runIntake(ShooterConstants.kIntakeShootSpeed);
     } else {
       shooter.runFeeder(0);
-      shooter.runIntake(0);
     }
   }
 
